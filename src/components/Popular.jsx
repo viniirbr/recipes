@@ -4,41 +4,54 @@ import { Splide, SplideSlide } from '@splidejs/react-splide'
 import '@splidejs/splide/dist/css/splide.min.css';
 
 function Popular() {
+    
+    const [popular, setPopular] = useState([])
 
     useEffect(() => {
         getPopular()
     }, [])
 
-    const [popular, setPopular] = useState([])
 
     const getPopular = async () => {
-        const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
-        const data = await api.json();
-        setPopular(data.recipes)
+
+
+        const local = localStorage.getItem('popular');
+
+        if (local) {
+            setPopular(JSON.parse(local));
+        } else {
+            const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+            const data = await api.json();
+            localStorage.setItem('popular', JSON.stringify(data.recipes))
+            setPopular(data.recipes)
+        }
+
     }
     return (
-        <Wrapper>
-            <h3>Popular picks</h3>
-            <Splide options={{
-                perPage: 4,
-                arrows: false,
-                drag: true,
-                gap: '5rem',
-                pagination: false
-            }}>
-                {popular.map((recipe) => {
-                    return (
-                        <SplideSlide key={recipe.id}>
-                            <Card key={recipe.id}>
-                                <p>{recipe.title}</p>
-                                <img src={recipe.image} />
-                                <Gradient />
-                            </Card>
-                        </SplideSlide>
-                    );
-                })}
-            </Splide>
-        </Wrapper>
+        <div>
+            <Wrapper>
+                <h3>Popular picks</h3>
+                <Splide options={{
+                    perPage: 4,
+                    arrows: false,
+                    drag: true,
+                    gap: '3rem',
+                    pagination: false
+                }}>
+                    {popular.map((recipe) => {
+                        return (
+                            <SplideSlide key={recipe.id}>
+                                <Card key={recipe.id}>
+                                    <p>{recipe.title}</p>
+                                    <img src={recipe.image} alt={recipe.title} />
+                                    <Gradient />
+                                </Card>
+                            </SplideSlide>
+                        );
+                    })}
+                </Splide>
+            </Wrapper>
+        </div>
     )
 }
 
@@ -49,7 +62,8 @@ const Wrapper = styled.div`
 const Card = styled.div`
     min-height: 25rem;
     border-radius: 2rem;
-    overflow:hidden;
+    overflow: hidden;
+    width: 100%;
 
     img {
         border-radius: 2rem;
@@ -70,7 +84,7 @@ const Card = styled.div`
         width: 100%;
         text-align: center;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 1.3rem;
         height: 40%;
         display: flex;
         justify-content: center;
@@ -82,7 +96,7 @@ const Gradient = styled.div`
     z-index: 3;
     position: absolute;
     width: 100%;
-    height: 100%
+    height: 100%;
     background: linear-gradient(rgba(0,0,0,0))
 `
 
