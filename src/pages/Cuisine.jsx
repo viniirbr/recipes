@@ -19,11 +19,11 @@ function Cuisine() {
   }, [params.type])
 
   return (
-    <Grid 
-      animate={{opacity: 1}}
-      initial={{opacity: 0}}
-      exit={{opacity: 0}}
-      transition={{duration: 0.5}}>
+    <Grid
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}>
       {cuisine.map(item => {
         return (
           <Card key={item.id}>
